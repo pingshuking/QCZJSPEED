@@ -9,13 +9,15 @@ boxjs链接  https://raw.githubusercontent.com/ziye12/QCZJSPEED/main/Task/ziye.q
 
 ⚠️汽车之家极速版
 
-下载地址 http://athm.cn/rUcSMrc 邀请码 99558995   
+下载地址 http://athm.cn/rUcSMrc 邀请码 99558995
+助力活动入口 https://raw.githubusercontent.com/ziye12/QCZJSPEED/main/Task/qczjzl.png
 
 谢谢支持
 
 12.20 优化重写说明,优化时段重写
 12.21 修复boxjs配置错误，钱包ck易掉，故去除
 12.23 去除14天任务显示，增加惊喜福利，视频，福利视频，福利 4个任务
+1.5 取消助力任务显示，可从活动入口进入，然后分享自己的助力，再助力自己获取助力ck
 
 
 ⚠️一共9个位置 12个ck  14条 Secrets 
@@ -45,7 +47,7 @@ activitybodyVal      👉  QCZJ_activityBODY
 addCoinbodyVal       👉  addCoinBODY
 addCoin2bodyVal      👉  addCoin2BODY
 
-点击 活动>>分享赚现金 自己助力自己 获取助力任务header  body 
+微信扫码 https://raw.githubusercontent.com/ziye12/QCZJSPEED/main/Task/qczjzl.png   然后自己助力自己 获取助力任务header  body 
 reportAssheaderVal   👉  reportAssHEADER
 reportAssbodyVal     👉  reportAssBODY
 
@@ -124,7 +126,7 @@ const notifyInterval = 1;// 0为关闭通知，1为所有通知，
 const cointowalletid = 0.5;//提现金额
 const ins = $.getval('qczjIns'); // ⚠️0不获取，1获取惊喜福利body，2获取视频body,3获取福利视频body,4获取福利body
 
-
+let gksp,flsp,lqfl;
 $.message = '';
 
 const GetUserInfourlArr = [];
@@ -580,14 +582,14 @@ if (!GetUserInfourlArr[0]) {
       await coin();
       await task();
       await activity();
-	  await Goldcoin();
-	  await video();
-	  await Welfarevideo();
-	  await Welfare();
+      await Goldcoin();
+      await video();
+      await Welfarevideo();
+      await Welfare();
       await addCoin();
       await addCoin2();
       await reportAss();
-      //await cointowallet();
+      await cointowallet();
       
   }
 }
@@ -651,12 +653,13 @@ function task(timeout = 0) {
         try {
           if (logs) $.log(`${$.name}, 日常任务🚩: ${data}`);
           $.task = JSON.parse(data);
-let taskinfo=$.task.result.list[1].tasklist
+      gksp = $.task.result.list[1].tasklist.find(item => item.id === 14);
+      flsp = $.task.result.list[1].tasklist.find(item => item.id === 18);
+      lqfl = $.task.result.list[1].tasklist.find(item => item.id === 35);
   $.message +=  
-  '【'+taskinfo[1].title+'】：奖励'+taskinfo[1].tiptxt+'，进度'+taskinfo[1].step+'\n'+
-  '【'+taskinfo[6].title+'】：奖励'+taskinfo[6].tiptxt+'，进度'+taskinfo[6].step+'\n'+
-  '【'+taskinfo[7].title+'】：奖励'+taskinfo[7].tiptxt+'\n'+
-  '【'+taskinfo[9].title+'】：奖励'+taskinfo[9].tiptxt+'，进度'+taskinfo[9].step+'\n';
+  '【'+gksp.title+'】：奖励'+gksp.tiptxt+'，进度'+gksp.step+'\n'+
+  '【'+flsp.title+'】：奖励'+flsp.tiptxt+'，进度'+flsp.step+'\n'+
+  '【'+lqfl.title+'】：奖励'+lqfl.tiptxt+'\n';
         } catch (e) {
           $.logErr(e, resp);
         } finally {
