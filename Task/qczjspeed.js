@@ -693,9 +693,6 @@ function msgShow() {
   })
 }
 
-
-
-
 //用户名
 function GetUserInfo(timeout = 0) {
   return new Promise((resolve) => {
@@ -723,10 +720,7 @@ function coin(timeout = 0) {
   return new Promise((resolve) => {
     setTimeout( ()=>{
       let url = {
-        url:`https://mobile.app.autohome.com.cn/speedgrow_v1.0.0/taskcenter/init/coin`,
-
-
-        
+        url:`https://mobile.app.autohome.com.cn/speedgrow_v1.0.0/taskcenter/init/coin`,        
         headers: JSON.parse(GetUserInfoheaderVal),
 		body: coinbodyVal,
       }
