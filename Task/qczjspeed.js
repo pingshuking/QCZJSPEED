@@ -6,7 +6,6 @@ TG交流群   https://t.me/joinchat/AAAAAE7XHm-q1-7Np-tF3g
 boxjs链接  https://raw.githubusercontent.com/ziye12/QCZJSPEED/main/Task/ziye.qczjboxjs.json
 
 转载请备注个名字，谢谢
-
 ⚠️汽车之家极速版
 
 下载地址 http://athm.cn/rUcSMrc 邀请码 99558995
@@ -18,6 +17,7 @@ boxjs链接  https://raw.githubusercontent.com/ziye12/QCZJSPEED/main/Task/ziye.q
 12.21 修复boxjs配置错误，钱包ck易掉，故去除
 12.23 去除14天任务显示，增加惊喜福利，视频，福利视频，福利 4个任务
 1.5 取消助力任务显示，可从活动入口进入，然后分享自己的助力，再助力自己获取助力ck
+1.9 优化，可固定ck，整合通知为1个，可boxjs或者Secrets 设置提现金额
 
 
 ⚠️一共9个位置 12个ck  14条 Secrets 
@@ -122,7 +122,6 @@ const COOKIE = $.isNode() ? require("./qczjspeedCOOKIE") : ``;
 const logs = 0; // 0为关闭日志，1为开启
 const notifyttt = 1// 0为关闭外部推送，1为12 23 点外部推送
 const notifyInterval = 2;// 0为关闭通知，1为所有通知，2为12 23 点通知  ， 3为 6 12 18 23 点通知 
-const cointowalletid = 0.5;//提现金额
 const ins = $.getval('qczjIns'); // ⚠️0不获取，1获取惊喜福利body，2获取视频body,3获取福利视频body,4获取福利body
 
 let tz, gksp,flsp,lqfl;
@@ -585,6 +584,7 @@ if (isGetCookie) {
 } else {
   !(async () => {
     await all();
+    await msgShow();
     
   })()
       .catch((e) => {
@@ -641,6 +641,7 @@ if (!Length) {
   }
   O = (`${$.name + (i + 1)}🔔`);
   await console.log(`-------------------------\n\n🔔开始运行【${$.name+(i+1)}】`) 
+      
       await GetUserInfo();//用户名   
       await coin();//账户信息    
       await task();//日常任务
@@ -666,7 +667,7 @@ if (!Length) {
         }
        
       }
-      await msgShow();
+      
   }
 
 }
@@ -674,24 +675,27 @@ if (!Length) {
 function msgShow() {
   return new Promise(async resolve => {
       if (notifyInterval != 1) {
-        console.log(O + '\n' + $.message);
+        console.log($.name + '\n' + $.message);
       }
 
       if (notifyInterval == 1) {
-        $.msg(O, ``, $.message);
+        $.msg($.name, ``, $.message);
       }
       if (notifyInterval == 2 && (nowTimes.getHours() === 12 || nowTimes.getHours() === 23) && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)) {
-        $.msg(O, ``, $.message);
+        $.msg($.name, ``, $.message);
       }
       if (notifyInterval == 3 && (nowTimes.getHours() === 6 || nowTimes.getHours() === 12 || nowTimes.getHours() === 18 || nowTimes.getHours() === 23) && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10)) {
-        $.msg(O, ``, $.message);
+        $.msg($.name, ``, $.message);
       }
 
       if (notifyttt == 1 && $.isNode() && (nowTimes.getHours() === 12 || nowTimes.getHours() === 23) && (nowTimes.getMinutes() >= 0 && nowTimes.getMinutes() <= 10))
-        await notify.sendNotify(O, $.message);	
+        await notify.sendNotify($.name, $.message);	
 	resolve()
   })
 }
+
+
+
 
 //用户名
 function GetUserInfo(timeout = 0) {
@@ -705,6 +709,7 @@ function GetUserInfo(timeout = 0) {
         try {
           if (logs) $.log(`${O}, 用户名🚩: ${data}`);
           $.GetUserInfo = JSON.parse(data);
+$.message +=`\n${O}`;
 $.message += `\n========== 【${$.GetUserInfo.result.name}】 ==========\n`;
         } catch (e) {
           $.logErr(e, resp);
@@ -720,7 +725,10 @@ function coin(timeout = 0) {
   return new Promise((resolve) => {
     setTimeout( ()=>{
       let url = {
-        url:`https://mobile.app.autohome.com.cn/speedgrow_v1.0.0/taskcenter/init/coin`,        
+        url:`https://mobile.app.autohome.com.cn/speedgrow_v1.0.0/taskcenter/init/coin`,
+
+
+        
         headers: JSON.parse(GetUserInfoheaderVal),
 		body: coinbodyVal,
       }
@@ -955,9 +963,7 @@ function reportAss(timeout = 0) {
   return new Promise((resolve) => {
     setTimeout( ()=>{
 		do out = Math.floor(Math.random()*10000000);
-        while( out < 100 )		
-	   for(var i=0;i<1;i++){
-		 setTimeout( ()=>{	  
+        while( out < 10000 )				 	  
 	  let body = reportAssbodyVal.replace(/userAssistanceId=[0-9]{0,10}/, `userAssistanceId=${out}`)
       let url = {
         url:`https://openapi.autohome.com.cn/autohome/uc-news-quickappservice/msapi/dealers/reportAss`,
@@ -975,9 +981,7 @@ if($.reportAss.data==0)
         } finally {
           resolve()
         }
-      })
-	  },1000)
-	 }
+      })	  
     },timeout)
   })
 }
@@ -985,7 +989,7 @@ if($.reportAss.data==0)
 function cointowallet(timeout = 0) {
   return new Promise((resolve) => {
     setTimeout( ()=>{
-	  let body = cointowalletbodyVal.replace(/coin_amount=[0-9]{0,6}/, `coin_amount=${cointowalletid*10000}`)
+	  let body = cointowalletbodyVal.replace(/coin_amount=[0-9]{0,6}/, `coin_amount=${CASH*10000}`)
       let url = {
         url: `https://mobile.app.autohome.com.cn/fasthome/coin/cointowallet`,
         headers: JSON.parse(GetUserInfoheaderVal),
@@ -996,7 +1000,7 @@ function cointowallet(timeout = 0) {
           if (logs) $.log(`${O}, 提现🚩: ${data}`);
           $.cointowallet = JSON.parse(data);
 if($.cointowallet.returncode==0)
-  $.message +='【提现'+cointowalletid+'元】：成功\n';  
+  $.message += `【现金提现】:成功提现${CASH}元\n`;
         } catch (e) {
           $.logErr(e, resp);
         } finally {
